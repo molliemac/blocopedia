@@ -10,13 +10,15 @@ include Faker
 
 10.times do
   User.create!(
+  name: Faker::Name.name,
   email: Faker::Internet.email,
   password: Faker::Internet.password
   )
 end
 
-	user = User.first
+	user_1 = User.first
 	user.update_attributes!(
+    name: 'Mollie',
 		email: 'mollie.mcintyre9@gmail.com',
 		password: 'helloworld'
 	)
@@ -24,8 +26,8 @@ end
 #   email: "newemail@blocipedia.com",
 #   password: "password"
 # )
-# user_1.skip_confirmation!
-# user_1.save!
+user_1.skip_confirmation!
+user_1.save!
 
 users = User.all
 
