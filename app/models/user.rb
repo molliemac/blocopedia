@@ -33,15 +33,15 @@ class User < ActiveRecord::Base
 
   private
 
-  def send_confirmation_email
-    UserMailer.new_user(self).deliver_now
-  end
+  #def send_confirmation_email
+    #UserMailer.new_user(self).deliver_now
+  #end
 
-  def downgrade
-    self.role = "standard"
-    wikis.each do |wiki|
-      wiki.make_public
-    end
-    save
-  end
+  #def down_grade
+   # self.role = "standard"
+    #wikis.each do |wiki|
+     # wiki.make_public
+    #end
+    #save
+  #end
 end
