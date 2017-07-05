@@ -6,7 +6,7 @@ class UsersController < Devise::RegistrationsController
 
   def down_grade
     current_user.update_attribute(:role, 'standard')
-    flash[:alert] = "You have downgraded your account, #{current_user.name}"
+    flash[:alert] = "You have downgraded your account, #{current_user.name}. Your private wikis are now public."
     redirect_to root_path
   end
 

@@ -17,7 +17,7 @@ include Faker
 end
 
 	user_1 = User.first
-	user.update_attributes!(
+	user_1.update_attributes!(
     name: 'Mollie',
 		email: 'mollie.mcintyre9@gmail.com',
 		password: 'helloworld'
@@ -26,7 +26,7 @@ end
 #   email: "newemail@blocipedia.com",
 #   password: "password"
 # )
-user_1.skip_confirmation!
+#user_1.skip_confirmation!
 user_1.save!
 
 users = User.all

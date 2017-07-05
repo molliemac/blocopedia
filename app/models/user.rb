@@ -4,12 +4,12 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable
 
-  has_many :wikis, dependent:  :destroy
+  has_many :wikis, dependent: :destroy
 
   after_initialize :init_role
 
   before_save { self.email = email.downcase if email.present? }
-  after_create :send_confirmation_email
+  #after_create :send_confirmation_email
 
   validates :name, length: { minimum: 1, maximum: 100 }, presence: true
 
@@ -37,11 +37,9 @@ class User < ActiveRecord::Base
     #UserMailer.new_user(self).deliver_now
   #end
 
-  #def down_grade
-   # self.role = "standard"
-    #wikis.each do |wiki|
-     # wiki.make_public
-    #end
-    #save
-  #end
+  def self.down_grade(user)
+    self.roles == 'standard'
+    Wiki.make_public(user)
+  end
+
 end
