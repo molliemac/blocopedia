@@ -1,16 +1,18 @@
 class WikiPolicy < ApplicationPolicy
 
-  attr_reader :user, :wiki
-
-  def initialize(user, record)
-  @user = user
-  @record = record
-end
+  
+  def show?
+    if record.private? == true
+      user.premium? || user.admin?
+    elsif record.private? == false
+      user.present?
+    end
+  end
 
 
 
   def new?
-    user.present?
+    create?
   end
 
   def create?
@@ -22,10 +24,24 @@ end
   end
 
   def update?
-    user.present?
+    if record.private? == true
+      user.premium? || user.admin?
+    elsif record.private? == false
+      user.present?
+    end
   end
 
   def destroy?
-     user.role == "admin" || record.user == user
+     record.user.role == "admin" || record.user == user
+  end
+
+  class Scope
+
+    attr_reader :user, :scope
+
+    def initialize(user, scope)
+      @user = user
+      @scope = scope
+    end
   end
 end
