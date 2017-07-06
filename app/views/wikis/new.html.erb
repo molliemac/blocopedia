@@ -20,6 +20,7 @@
 
         <%= f.label :body %>
         <%= f.text_area :body, rows: 8, class:'form-control', placeholder: 'Enter Wiki Body' %>
+        <small>This site supports markdown syntax. For more information, click <%= link_to 'here', 'https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet' %> </small>
 
         <%= f.submit "Save", class:'btn btn-primary submit-button' %>
         <% if current_user.admin? || current_user.premium? %>
