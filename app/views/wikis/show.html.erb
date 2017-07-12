@@ -1,20 +1,21 @@
-<p class="index-link"><%= link_to "Back to Wiki Index", wikis_path %></p>
+<div class="container">
 
-<%= link_to "Edit Wiki", edit_wiki_path(@wikis), class:"btn btn-success"%>
-<%= link_to "Delete Wiki", @wikis, method: :delete, class:"btn btn-danger"%>
-<h2 class="page-header"><%= markdown(@wikis.title) %><small> Created by <%=@wikis.user.name%></small></h2>
+  <%= link_to "Back to wikis", wikis_path %>
 
-<% if @wikis.private? == false %>
-<h6 class="wiki_private"> Public Wiki</h6>
-<% else %>
-<h6 class="wiki_private">Private Wiki </h6>
-<% end %>
 
-<!-- <%= @wikis.private? %> -->
+  <% if policy(@wiki).show? %>
+    <h1><%= markdown_to_html @wiki.title %></h1>
+    <p><%= markdown_to_html @wiki.body %></p>
+    <small>
+      <i>authored by: <%= @wiki.user.name %></i>
+      <p><%= render partial: 'collaborators/collaborators', locals: { wiki: @wiki, user: current_user } %></p>
+    </small>
+  <% end %>
 
-</br>
-<div class="row">
-  <div class="col-md-8">
-    <p><%= markdown(@wikis.body) %></p>
-  </div>
+    <br>
+
+  <% if policy(@wiki).update? %>
+    <%= link_to "Edit Wiki", edit_wiki_path(@wiki), class: 'btn btn-success' %>
+    <%= link_to "Delete Wiki", [@wiki], method: :delete, class: 'btn btn-danger', data: {confirm: 'Are you sure you want to delete this wiki?' } %>
+  <% end %>
 </div>
