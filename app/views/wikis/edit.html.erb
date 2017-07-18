@@ -1,33 +1,38 @@
-<%= link_to "Back to Wiki", @wiki %>
-<h1>Edit Wiki</h1>
-<br>
-<br>
-<div class="row">
-  <div class="col-md-8">
-    <%= form_for @wiki do |f| %>
-      <div class="form-group">
-        <%= f.label :title %>
-        <%= f.text_field :title, class: 'from-control', placeholder: "Wiki Title" %>
+<div class="form-container">
+  <%= form_for @wiki do |f| %>
+    <div class="form-label">
+      <%= f.label :title %>
+    </div>
+    <div class="form-entry">
+      <%= f.text_field :title, class: "form-width" %>
+    </div>
+    <div class="form-label">
+      <%= f.label :body %>
+    </div>
+    <div class="form-entry">
+        <%= f.text_area :body, rows: 30, class: "form-width" %>\
+    </div>
+    <div class="check-label">
+      <%= link_to "add collaborators", new_collaborator_path(wiki_id: @wiki.id) %>
+    </div>
+    <% if premium? && own? %>
+      <div class="check-label">
+        <%= f.label :private %>
       </div>
-      <div class="form-group">
-        <%= f.label :body %>
-        <%= f.text_area :body, rows: 8, class: 'form-control', placeholder: "Wiki Body" %>
+      <div class="check-form">
+        <%= f.check_box :private %>
       </div>
-      <div class="form-group">
-        <% if (current_user.admin? || current_user.premium?) %>
-          <%= f.label :private, class: 'checkbox' do %>
-            <%= f.check_box :private %> Private Wiki?
-          <% end %>
-        <% end %>
+    <% elsif !own? %>
+      <div class="check-label">
+        <p>You must own this wiki to make it private</p>
       </div>
-      <div class="form-group">
-        <%= f.submit "Save", class: 'btn btn-success' %>
+    <% elsif own? && !premium? %>
+      <div class="check-label">
+        <%= link_to "upgrade to make this wiki private", new_charge_path %>
       </div>
     <% end %>
-  </div>
-</div>
-
-<!-- provides field to add collaborator and shows existing collaborators -->
-<div class="form-group">
-  <%= render partial: 'collaborators/collaborators', locals: { wiki: @wiki, user: current_user } %>
+    <div class="btn-container">
+      <%= f.submit "Update" %>
+    </div>
+  <% end %>
 </div>

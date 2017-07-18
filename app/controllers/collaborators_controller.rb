@@ -1,27 +1,25 @@
 class CollaboratorsController < ApplicationController
-	def create
-    @wiki = Wiki.find(params[:wiki_id])
-    @user = User.where(email: params[:email]).take
-    authorize @user
+  #include Pundit
+  #skip_after_action :verify_authorized
 
-    if @user == nil
-      flash[:error] = "Collaborator could not be found."
-      redirect_to edit_wiki_path(@wiki)
-    elsif @wiki.users.include?(@user)
-      flash[:error] = "Collaborator already exists."
+  def new
+    @wiki_collaborators = []
+    @wiki = params['wiki_id']
+    @collaborators = Wiki.find(@wiki).collaborators
+    @collaborators.each { |collaborator| @wiki_collaborators.push(collaborator.user) }
+    @collaborator = Collaborator.new
+  end
+
+	def create
+    @collaborator = Collaborator.new( user_id: find_user(params['collaborator']['user_id']), wiki_id: @wiki)
+
+    if @collaborator.save
+      flash['notice'] = "Collaborator added."
       redirect_to edit_wiki_path(@wiki)
     else
-      collaborator = @wiki.collaborators.build(user_id: @user.id)
-
-      if collaborator.save
-        flash[:notice] = "Your collaborator has been added to the wiki."
-        redirect_to edit_wiki_path(@wiki)
-      else
-        flash[:error] = "Collaborator could not be added. Check spelling!"
-        redirect_to edit_wiki_path(@wiki)
-      end
+      flash['alert'] = "Unable to add collaborator, could not find user"
+      redirect_to edit_wiki_path(@wiki)
     end
-
   end
 
 
@@ -37,6 +35,14 @@ class CollaboratorsController < ApplicationController
       flash[:error] = "Collaborator could not be removed."
       redirect_to edit_wiki_path(@wiki)
     end
-
+  end
+  
+  def find_user(email)
+    user = User.find_by(email: email)
+    if user.nil?
+      return
+    else
+      user.id
+    end
   end
 end

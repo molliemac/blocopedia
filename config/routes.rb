@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
   devise_for :users
+
+  get "collaborators/new"
+  get "collaborator/new"
   
   resources :wikis
-  resources :collaborators, only: [:create, :destroy]
+  resources :collaborators, only: [:new, :create, :destroy]
 
   devise_scope :user do
   	get "users/show"

@@ -1,18 +1,31 @@
 // Place all the styles related to the Wiki controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-.submit-button {
-  margin-top: 5px;
+.index-btn {
+  float: left;
 }
 
-.index-link {
-  margin-top: 10px;
+.btn-container {
+  margin-top: 3rem;
 }
 
-.new_wiki_btn {
-  margin-bottom: 15px;
+.btn-container input {
+  margin-left: 10%;
 }
 
-.collaborators {
-  margin-bottom: 20px;
+.new-wiki {
+  margin-top: 3rem;
+}
+
+.form-entry {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.form-label label {
+  padding-left: 10%;
+}
+
+.form-width {
+  width: 80%;
 }

@@ -1,27 +1,32 @@
 class WikisController < ApplicationController
+  include WikiHelper
 
-  before_action :authorize_user, except: [:index, :show]
+  before_action :authenticate_user!
+  before_action :update?, except: [:index, :create, :new, :show]
+  before_action :delete?, only: [:destroy]
+  #after_action :verify_authorized, except: [:index, :new, :show, :create, :edit]
+
   def index
-    #anyone
-    @wikis = policy_scope(Wiki)
+    @wikis = Wiki.where(user_id: current_user.id)
   end
 
   def show
-    #anyone
     @wiki = Wiki.find(params[:id])
+    options = { autolink: true, filter_html: true }
+    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, options)
+    @body = markdown.render(@wiki.body)
   end
 
   def new
     #if current_user
     @wiki = Wiki.new
-    authorize @wiki
   end
 
   def create
     # if current User
     @wiki = current_user.wikis.build(params.require(:wiki).permit(:title, :body, :private))
     @wiki.user = current_user
-    authorize @wiki
+    #authorize @wiki
 
     if @wiki.save
       flash[:notice] = "Wiki was saved."
@@ -35,12 +40,12 @@ class WikisController < ApplicationController
   def edit
     # if current user
     @wiki = Wiki.find(params[:id])
-    authorize @wiki
+    #authorize @wiki
   end
 
   def update
     @wiki = Wiki.find(params[:id])
-    authorize @wiki
+    #authorize @wiki
 
     if @wiki.update_attributes(params.require(:wiki).permit(:title, :body, :private))
       flash[:notice] = "Wiki has been updated."
@@ -54,7 +59,7 @@ class WikisController < ApplicationController
 
   def destroy
     @wiki = Wiki.find(params[:id])
-    authorize @wiki
+    #authorize @wiki
 
     if @wiki.destroy
       flash[:notice] = "\"#{@wiki.title}\" was deleted successfully."
@@ -63,28 +68,5 @@ class WikisController < ApplicationController
       flash.now[:alert] = "There was an error deleting your wiki. Try again."
       render :show
     end
-  end
-
-  
-
-  private
-
-  def authorize_user
-    # @wikis = Wiki.find(params[:id])
-    unless current_user
-      flash[:alert]= "You must be logged in to do that. Sign up or log in now!"
-      redirect_to root_path
-    end
-  end
-
-  def clear_collaborators
-    @wiki = Wiki.find(params[:id])
-    if @wiki.private == false
-      @wiki.collaborators.clear
-    end
-  end
-
-  def wiki_params
-    params.require(:wiki).permit(:title, :body, :private)
   end
 end
