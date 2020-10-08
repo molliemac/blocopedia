@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
-  resources :wikis
-
   devise_for :users
+
+  get "collaborators/new"
+  get "collaborator/new"
+  
+  resources :wikis
+  resources :collaborators, only: [:new, :create, :destroy]
 
   devise_scope :user do
   	get "users/show"
@@ -12,7 +16,6 @@ Rails.application.routes.draw do
   resources :charges, only: [:new, :create]
 
   get "welcome/index"
-
   root 'welcome#index'
 
 end

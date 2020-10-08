@@ -1,47 +1,21 @@
 class WikiPolicy < ApplicationPolicy
-
-  
-  def show?
-    if record.private? == true
-      user.premium? || user.admin?
-    elsif record.private? == false
-      user.present?
-    end
-  end
-
-
-
-  def new?
-    create?
-  end
-
-  def create?
-    user.present?
-  end
-
-  def edit?
-    user.present?
-  end
-
   def update?
-    if record.private? == true
-      user.premium? || user.admin?
-    elsif record.private? == false
-      user.present?
+    @wiki = Wiki.find(parmas[:id])
+    unless @wiki.user_id == current_user.id || @wiki.public
+      flash.now[:alert] = "You must own this wiki to make changes."
+      render :show
     end
   end
 
-  def destroy?
-     record.user.role == "admin" || record.user == user
+  def standard?
+
   end
 
-  class Scope
+  def premium?
 
-    attr_reader :user, :scope
+  end
 
-    def initialize(user, scope)
-      @user = user
-      @scope = scope
-    end
+  def owner?
+
   end
 end

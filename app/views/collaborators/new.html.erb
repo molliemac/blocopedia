@@ -1,0 +1,23 @@
+<div class="container">
+  <% if @wiki_collaborators %>
+    <% @wiki_collaborators.each do |col| %>
+      <div class="collaborator-width">
+        <div class="float-left">
+          <p><%= col.email %></p>
+        </div>
+        <div class="float-left col-sm-3">
+          <%= link_to "remove", collaborator_path(@collaborators.find_by_user_id(col.id)), method: :delete, data: { confirm: "Remove this collaborator?" } %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+<%= form_for @collaborator do |f| %>
+  <div class="form-label">
+    <%= f.label :user_id %>
+  </div>
+  <div class="form-entry">
+    <%= f.text_field :user_id, class: "form-width" %>
+  </div>
+    <%= f.submit %>
+<% end %>

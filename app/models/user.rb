@@ -6,30 +6,33 @@ class User < ActiveRecord::Base
 
   has_many :wikis, dependent: :destroy
 
-  after_initialize :init_role
+  has_many :collaborators
+  has_many :collaborations, through: :collaborators, source: :wiki
 
-  before_save { self.email = email.downcase if email.present? }
+  before_create :set_role
+
+  #before_save { self.email = email.downcase if email.present? }
   #after_create :send_confirmation_email
 
-  validates :name, length: { minimum: 1, maximum: 100 }, presence: true
+  #validates :name, length: { minimum: 1, maximum: 100 }, presence: true
 
-  validates :password, presence: true, length: { minimum: 6 }
-  validates :password, length: { minimum: 6 }, allow_blank: true
+  #validates :password, presence: true, length: { minimum: 6 }
+  #validates :password, length: { minimum: 6 }, allow_blank: true
 
-  validates :email, presence: true,
-            uniqueness: { case_sensitive: false },
-            length: { minimum: 3, maximum: 254 }
+  #validates :email, presence: true,
+            #uniqueness: { case_sensitive: false },
+            #length: { minimum: 3, maximum: 254 }
 
   enum role: [:standard, :admin, :premium]
 
-  def init_role
-    self.role ||= :standard
-  end
+  #def init_role
+    #self.role ||= :standard
+  #end
 
-  protected
-  def confirmation_required?
-    false
-  end
+  #protected
+  #def confirmation_required?
+    #false
+ # end
 
   private
 
@@ -37,9 +40,8 @@ class User < ActiveRecord::Base
     #UserMailer.new_user(self).deliver_now
   #end
 
-  def self.down_grade(user)
-    self.roles == 'standard'
-    Wiki.make_public(user)
+  def set_role
+    self.role = "standard" unless self.role
   end
 
 end

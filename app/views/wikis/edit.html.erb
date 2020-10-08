@@ -1,16 +1,38 @@
-<h1>Edit Wiki</h1>
- 
- <div class="row">
-   <div class="col-md-4">
-     <p>Guidelines for wikis</p>
-     <ul>
-       <li>Make sure it rhymes.</li>
-       <li>Don't use the letter "A".</li>
-       <li>The incessant use of hashtags will get you banned.</li>
-     </ul>
-   </div>
-   <div class="col-md-8">
-    <p>Edit your Wiki.</p>
-    <%= render partial: 'wikis/form' %>
-   </div>
- </div>
+<div class="form-container">
+  <%= form_for @wiki do |f| %>
+    <div class="form-label">
+      <%= f.label :title %>
+    </div>
+    <div class="form-entry">
+      <%= f.text_field :title, class: "form-width" %>
+    </div>
+    <div class="form-label">
+      <%= f.label :body %>
+    </div>
+    <div class="form-entry">
+        <%= f.text_area :body, rows: 30, class: "form-width" %>\
+    </div>
+    <div class="check-label">
+      <%= link_to "add collaborators", new_collaborator_path(wiki_id: @wiki.id) %>
+    </div>
+    <% if premium? && own? %>
+      <div class="check-label">
+        <%= f.label :private %>
+      </div>
+      <div class="check-form">
+        <%= f.check_box :private %>
+      </div>
+    <% elsif !own? %>
+      <div class="check-label">
+        <p>You must own this wiki to make it private</p>
+      </div>
+    <% elsif own? && !premium? %>
+      <div class="check-label">
+        <%= link_to "upgrade to make this wiki private", new_charge_path %>
+      </div>
+    <% end %>
+    <div class="btn-container">
+      <%= f.submit "Update" %>
+    </div>
+  <% end %>
+</div>
